@@ -1,288 +1,126 @@
-<style>
-@import "compass/css3";
+#set ($d = '$')
 
-@import url(https://fonts.googleapis.com/css?family=Satisfy|Pathway+Gothic+One);
-/* Defaults */
-html, body, #quizzie {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-}
-* {
-    box-sizing: border-box;
-}
-body {
-  background: #677c8a;
-  color: #fff;
-}
-h1 {
-  font-family: 'Satisfy', 'cursive';
-  font-size: 2.5em;
-}
-h2,p {
-  font-family: 'Pathway Gothic One', 'sans-serif';
-  font-size: 2em;
-}
-h1,h2,p {
+<style>
+.question-title {
+    font-size: 1.125rem;
+    color: #fff;
+    background: #ff0000;
     text-align: center;
-    display: block;
-    width: auto;
-    margin: 1%;
+    padding: 4px 50px;
+    margin: 10px 0;
 }
-#quizzie {
-  padding: 5% 0;
-  /* Individual Steps/Sections */
-  ul {
-      list-style: none;
-      display: block;
-      width: auto;
-      margin: 2% 2%;
-      padding: 2%;
-      overflow: auto;
-      display:none;
-    &.current {
-      display: block;
+ul.no-bullet {
+    list-style: none;
+}
+.no-bullet.answers {
+    width: 250px;
+    margin: 0 auto;
+}
+@media only screen and (min-width: 768px) {
+    .question-title {
+        margin-top: 97px;
     }
-    
-    /* Step Questions and Answer Options */
-    li {
-        display: inline-block;
-        float: left;
-        width: 49%;
-        margin-right: 2%;
-        overflow: auto;
-        text-align: center;
-      &.quiz-answer {
-          cursor: pointer;
-      }
-      &.question {
-          display: block;
-          float: none;
-          width: 100%;
-          text-align: center;
-          margin: 0;
-          margin-bottom: 2%;
-      }
-      &.results-inner {
-          @extend .question;
-          padding: 5% 2%;
-          img {
-              width: 250px;
-          }
-      }
-    }
-    li:last-child {
-        margin-right: 0;
-    }
-  }
-  
-  /* Content */
-  .question-wrap {
-      display: block;
-      padding: 1%;
-      margin: 1em 10%;
-      @include border-radius(10px);
-  }
-  .answer-wrap {
-      @extend .question-wrap;
-      background: Turquoise;
-      @include transition(background-color 0.5s ease);
-      &:hover {
-        background: DarkTurquoise;
-      }
-  }
+}
+.quiz-step {
+    display: none;
+}
+.quiz-step.current {
+    display: block;
 }
 </style>
 
-
-<div id="quizzie">
-  <h1>What Type Of Thing Are You?</h1>
-    <ul class="quiz-step step1 current">
-        <li class="question">
-            <div class="question-wrap">
-                <h2>Question #1: Are you more...</h2>
-            </div>
-        </li>
-        <li class="quiz-answer low-value" data-quizIndex="2">
-            <div class="answer-wrap"> 
-                <p class="answer-text">This Thing</p>
-            </div>
-        </li>
-        <li class="quiz-answer high-value" data-quizIndex="4">
-            <div class="answer-wrap"> 
-                <p class="answer-text">That Thing</p>
-            </div>
-        </li>
-    </ul>
-    <ul class="quiz-step step2">
-        <li class="question">
-            <div class="question-wrap">
-                <p>Question #2: Are you more...</p>
-            </div>
-        </li>
-        <li class="quiz-answer low-value" data-quizIndex="2">
-            <div class="answer-wrap"> 
-                <p class="answer-text">First Thing</p>
-            </div>
-        </li>
-        <li class="quiz-answer high-value" data-quizIndex="4">
-            <div class="answer-wrap">
-                <p class="answer-text">Second Thing</p>
-            </div>
-        </li>
-    </ul>
-    <ul class="quiz-step step3">
-        <li class="question">
-            <div class="question-wrap">
-                <p>Question #3: Are you more...</p>
-            </div>
-        </li>
-        <li class="quiz-answer low-value" data-quizIndex="2">
-            <div class="answer-wrap">
-                <p class="answer-text">One Thing</p>
-            </div>
-        </li>
-        <li class="quiz-answer high-value" data-quizIndex="4">
-            <div class="answer-wrap">
-                <p class="answer-text">Another Thing</p>
-            </div>
-        </li>
-    </ul>
-    <ul class="quiz-step step4">
-        <li class="question">
-            <div class="question-wrap">
-                <p>Question #4: Are you more...</p>
-            </div>
-        </li>
-        <li class="quiz-answer low-value" data-quizIndex="2">
-            <div class="answer-wrap">
-                <p class="answer-text">Thing 1</p>
-            </div>
-        </li>
-        <li class="quiz-answer high-value" data-quizIndex="4">
-            <div class="answer-wrap">
-                <p class="answer-text">Thing 2</p>
-            </div>
-        </li>
-    </ul>
-    <ul id="results">
-        <li class="results-inner">
-            <p>Your result is:</p>
-            <h1></h1>
-            <p class="desc"></p>
-        </li>
-    </ul>
-</div>
-
-<script>
-// Quiz result options in a separate object for flexibility
-var resultOptions = [
-    {   title: 'You Are This Thing',
-        desc: '<p>Here, have an Archer</p><img src="https://i.imgur.com/tXTjD9k.jpg"/>'},
-    {   title: 'You Are That Thing',
-        desc: '<p>Here, have an Archer</p><img src="https://i.imgur.com/dipkE0v.jpg"/>'},
-    {   title: 'You Are This Other Thing',
-        desc: '<p>Here, have an Archer</p><img src="https://i.imgur.com/WXox0Yv.jpg"/>'},
-    {   title: 'You Are This One Thing',
-        desc: '<p>Here, have an Archer</p><img src="https://i.imgur.com/NH5cunw.png"/>'},
-    {   title: 'You Are A Type Of Thing',
-        desc: '<p>Here, have an Archer</p><img src="https://i.imgur.com/NH5cunw.png"/>'}
-];
-    
-// global variables
-var quizSteps = $('#quizzie .quiz-step'),
-    totalScore = 0;
-
-// for each step in the quiz, add the selected answer value to the total score
-// if an answer has already been selected, subtract the previous value and update total score with the new selected answer value
-// toggle a visual active state to show which option has been selected
-quizSteps.each(function () {
-    var currentStep = $(this),
-        ansOpts = currentStep.children('.quiz-answer');
-    // for each option per step, add a click listener
-    // apply active class and calculate the total score
-    ansOpts.each(function () {
-        var eachOpt = $(this);
-        eachOpt[0].addEventListener('click', check, false);
-        function check() {
-            var $this = $(this),
-                value = $this.attr('data-quizIndex'),
-                answerScore = parseInt(value);
-            // check to see if an answer was previously selected
-            if (currentStep.children('.active').length > 0) {
-                var wasActive = currentStep.children('.active'),
-                    oldScoreValue = wasActive.attr('data-quizIndex'),
-                    oldScore = parseInt(oldScoreValue);
-                // handle visual active state
-                currentStep.children('.active').removeClass('active');
-                $this.addClass('active');
-                // handle the score calculation
-                totalScore -= oldScoreValue;
-                totalScore += answerScore;
-                calcResults(totalScore);
-            } else {
-                // handle visual active state
-                $this.addClass('active');
-                // handle score calculation
-                totalScore += answerScore;
-                calcResults(totalScore);
-                // handle current step
-                updateStep(currentStep);
-            }
+<script src="https://intermediate.intra.politaktiv.org/documents/10165/498023/jquery-latest.js/0d396618-0050-489c-8f96-100163768806">
+${d}('.quiz-step').each(function() {
+    var ${d}step = ${d}(this);
+    ${d}step.find('.quiz-answer').click(function () {
+        var ${d}this = ${d}(this);
+        alert('Test');
+        if (${d}step.children('.active').length > 0) {
+            var wasActive = ${d}step.children('.active');
+            ${d}step.children('.active').removeClass('active');
+            ${d}this.addClass('active');
+        } else {
+            ${d}this.addClass('active');
+            updateStep(${d}step);
         }
     });
 });
 
-// show current step/hide other steps
-function updateStep(currentStep) {
-    if(currentStep.hasClass('current')){
-       currentStep.removeClass('current');
-       currentStep.next().addClass('current');
-    }
-}
-
-// display scoring results
-function calcResults(totalScore) {
-    // only update the results div if all questions have been answered
-    if (quizSteps.find('.active').length == quizSteps.length){
-        var resultsTitle = $('#results h1'),
-            resultsDesc = $('#results .desc');
-        
-        // calc lowest possible score
-        var lowestScoreArray = $('#quizzie .low-value').map(function() {
-            return $(this).attr('data-quizIndex');
-        });
-        var minScore = 0;
-        for (var i = 0; i < lowestScoreArray.length; i++) {
-            minScore += lowestScoreArray[i] << 0;
-        }
-        // calculate highest possible score
-        var highestScoreArray = $('#quizzie .high-value').map(function() {
-            return $(this).attr('data-quizIndex');
-        });
-        var maxScore = 0;
-        for (var i = 0; i < highestScoreArray.length; i++) {
-            maxScore += highestScoreArray[i] << 0;
-        }
-        // calc range, number of possible results, and intervals between results
-        var range = maxScore - minScore,
-            numResults = resultOptions.length,
-            interval = range / (numResults - 1),
-            increment = '',
-            n = 0; //increment index
-        // incrementally increase the possible score, starting at the minScore, until totalScore falls into range. then match that increment index (number of times it took to get totalScore into range) and return the corresponding index results from resultOptions object
-        while (n < numResults) {
-            increment = minScore + (interval * n);
-            if (totalScore <= increment) {
-                // populate results
-                resultsTitle.replaceWith("<h1>" + resultOptions[n].title + "</h1>");
-                resultsDesc.replaceWith("<p class='desc'>" + resultOptions[n].desc + "</p>");
-                return;
-            } else {
-                n++;
-            }
-        }
+function updateStep(${d}currentStep) {
+    if (${d}currentStep.hasClass('current')) {
+        ${d}currentStep.removeClass('current');
+        ${d}currentStep.next('.quiz-step').addClass('current');
     }
 }
 </script>
+
+<div class="quiz-step step1 current">
+     <h2 class="question-title">In your mind, what's most important?</h2>
+
+    <ul class="no-bullet answers">
+        <li>
+            <input type="radio" name="q1" value="" class="quiz-answer" />
+            <label>Ability to express oneself</label>
+        </li>
+        <li>
+            <input type="radio" name="q1" value="" class="quiz-answer" />
+            <label>Ability to look at the big picture</label>
+        </li>
+        <li>
+            <input type="radio" name="q1" value="" class="quiz-answer" />
+            <label>Drive and determination</label>
+        </li>
+        <li>
+            <input type="radio" name="q1" value="" class="quiz-answer" />
+            <label>Understand logic and science</label>
+        </li>
+    </ul>
+</div>
+<div class="quiz-step step2">
+     <h2 class="question-title">What do you do best?</h2>
+
+    <ul class="no-bullet answers">
+        <li>
+            <input type="radio" name="q2" value="" class="quiz-answer" />
+            <label>Deal with stress</label>
+        </li>
+        <li>
+            <input type="radio" name="q2" value="" class="quiz-answer" />
+            <label>Effective time management</label>
+        </li>
+        <li>
+            <input type="radio" name="q2" value="" class="quiz-answer" />
+            <label>Use good judgment</label>
+        </li>
+        <li>
+            <input type="radio" name="q2" value="" class="quiz-answer" />
+            <label>Master interpersonal skills</label>
+        </li>
+    </ul>
+</div>
+<div class="quiz-step step3">
+     <h2 class="question-title">What is the key to being a successful marketer?</h2>
+
+    <ul class="no-bullet answers">
+        <li>
+            <input type="radio" name="q3" value="" class="quiz-answer" />
+            <label>Knowledge of data and statistics</label>
+        </li>
+        <li>
+            <input type="radio" name="q3" value="" class="quiz-answer" />
+            <label>Logical thinking and problem solving</label>
+        </li>
+        <li>
+            <input type="radio" name="q3" value="" class="quiz-answer" />
+            <label>People person &ndash; interaction</label>
+        </li>
+        <li>
+            <input type="radio" name="q3" value="" class="quiz-answer" />
+            <label>Advising, Analying, Evaluating</label>
+        </li>
+    </ul>
+</div>
+<div id="results" class="quiz-step">
+     <h2>result</h2>
+
+</div>

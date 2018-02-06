@@ -37,11 +37,11 @@ ul.no-bullet {
 
     <ul class="no-bullet answers">
         <li>
-            <input type="radio" name="q1" value="" class="quiz-answer" />
+            <input type="radio" name="q1" value="1" class="quiz-answer" />
             <label>Ability to express oneself</label>
         </li>
         <li>
-            <input type="radio" name="q1" value="" class="quiz-answer" />
+            <input type="radio" name="q1" value="2" class="quiz-answer" />
             <label>Ability to look at the big picture</label>
         </li>
         <li>
@@ -59,11 +59,11 @@ ul.no-bullet {
 
     <ul class="no-bullet answers">
         <li>
-            <input type="radio" name="q2" value="" class="quiz-answer" />
+            <input type="radio" name="q2" value="1" class="quiz-answer" />
             <label>Deal with stress</label>
         </li>
         <li>
-            <input type="radio" name="q2" value="" class="quiz-answer" />
+            <input type="radio" name="q2" value="2" class="quiz-answer" />
             <label>Effective time management</label>
         </li>
         <li>
@@ -108,10 +108,16 @@ ul.no-bullet {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
 ${d}(document).ready(function(){
+    var totalScore = 0;
+
     ${d}('.quiz-step').each(function() {
     var ${d}step = ${d}(this);
     ${d}step.find('.quiz-answer').click(function () {
         var ${d}this = ${d}(this);
+        
+        totalScore += parseInt(${d}this.attr('value'));
+        alert(totalScore);
+        
         if (${d}step.children('.active').length > 0) {
             var wasActive = ${d}step.children('.active');
             ${d}step.children('.active').removeClass('active');

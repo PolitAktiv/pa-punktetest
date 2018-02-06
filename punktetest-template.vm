@@ -1,4 +1,5 @@
-#set ($d = '$')
+#set ($jQueryInclude = "/documents/10165/498023/jquery-latest.js/0d396618-0050-489c-8f96-100163768806");
+#set ($d = '$');
 
 <style>
 .question-title {
@@ -29,30 +30,7 @@ ul.no-bullet {
 }
 </style>
 
-<script src="https://intermediate.intra.politaktiv.org/documents/10165/498023/jquery-latest.js/0d396618-0050-489c-8f96-100163768806">
-${d}('.quiz-step').each(function() {
-    var ${d}step = ${d}(this);
-    ${d}step.find('.quiz-answer').click(function () {
-        var ${d}this = ${d}(this);
-        alert('Test');
-        if (${d}step.children('.active').length > 0) {
-            var wasActive = ${d}step.children('.active');
-            ${d}step.children('.active').removeClass('active');
-            ${d}this.addClass('active');
-        } else {
-            ${d}this.addClass('active');
-            updateStep(${d}step);
-        }
-    });
-});
 
-function updateStep(${d}currentStep) {
-    if (${d}currentStep.hasClass('current')) {
-        ${d}currentStep.removeClass('current');
-        ${d}currentStep.next('.quiz-step').addClass('current');
-    }
-}
-</script>
 
 <div class="quiz-step step1 current">
      <h2 class="question-title">In your mind, what's most important?</h2>
@@ -124,3 +102,32 @@ function updateStep(${d}currentStep) {
      <h2>result</h2>
 
 </div>
+
+
+<script src="$jQueryInclude"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+${d}(document).ready(function(){
+    ${d}('.quiz-step').each(function() {
+    var ${d}step = ${d}(this);
+    ${d}step.find('.quiz-answer').click(function () {
+        var ${d}this = ${d}(this);
+        if (${d}step.children('.active').length > 0) {
+            var wasActive = ${d}step.children('.active');
+            ${d}step.children('.active').removeClass('active');
+            ${d}this.addClass('active');
+        } else {
+            ${d}this.addClass('active');
+            updateStep(${d}step);
+        }
+    });
+});
+
+function updateStep(${d}currentStep) {
+    if (${d}currentStep.hasClass('current')) {
+        ${d}currentStep.removeClass('current');
+        ${d}currentStep.next('.quiz-step').addClass('current');
+    }
+}
+});
+</script>

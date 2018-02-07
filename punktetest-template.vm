@@ -1,5 +1,6 @@
 #set ($jQueryInclude = "/documents/10165/498023/jquery-latest.js/0d396618-0050-489c-8f96-100163768806");
 #set ($d = '$');
+#set ($h = '#');
 
 <style>
 .question-title {
@@ -99,7 +100,6 @@ ul.no-bullet {
     </ul>
 </div>
 <div id="results" class="quiz-step">
-     <h2>result</h2>
 
 </div>
 
@@ -117,6 +117,7 @@ ${d}(document).ready(function(){
         
         totalScore += parseInt(${d}this.attr('value'));
         alert(totalScore);
+        
         
         if (${d}step.children('.active').length > 0) {
             var wasActive = ${d}step.children('.active');

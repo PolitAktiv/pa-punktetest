@@ -1,6 +1,6 @@
-#set ($jQueryInclude = "/documents/10165/498023/jquery-latest.js/0d396618-0050-489c-8f96-100163768806");
-#set ($d = '$');
-#set ($h = '#');
+#set ($jQueryInclude = "/documents/10165/498023/jquery-latest.js/0d396618-0050-489c-8f96-100163768806")
+#set ($d = '$')
+#set ($h = '#')
 
 <style>
 .question-title {
@@ -29,80 +29,38 @@ ul.no-bullet {
 .quiz-step.current {
     display: block;
 }
+.result {
+	display: block;
+}
+.result.current {
+	display: block;
+}
 </style>
 
-
-
-<div class="quiz-step step1 current">
-     <h2 class="question-title">In your mind, what's most important?</h2>
-
-    <ul class="no-bullet answers">
-        <li>
-            <input type="radio" name="q1" value="1" class="quiz-answer" />
-            <label>Ability to express oneself</label>
-        </li>
-        <li>
-            <input type="radio" name="q1" value="2" class="quiz-answer" />
-            <label>Ability to look at the big picture</label>
-        </li>
-        <li>
-            <input type="radio" name="q1" value="" class="quiz-answer" />
-            <label>Drive and determination</label>
-        </li>
-        <li>
-            <input type="radio" name="q1" value="" class="quiz-answer" />
-            <label>Understand logic and science</label>
-        </li>
-    </ul>
+<div class="quiz-step current">
+    $Erklaerung.getData()
+    <button class="quiz-answer" value="0">Quiz starten</button>
 </div>
-<div class="quiz-step step2">
-     <h2 class="question-title">What do you do best?</h2>
 
-    <ul class="no-bullet answers">
-        <li>
-            <input type="radio" name="q2" value="1" class="quiz-answer" />
-            <label>Deal with stress</label>
-        </li>
-        <li>
-            <input type="radio" name="q2" value="2" class="quiz-answer" />
-            <label>Effective time management</label>
-        </li>
-        <li>
-            <input type="radio" name="q2" value="" class="quiz-answer" />
-            <label>Use good judgment</label>
-        </li>
-        <li>
-            <input type="radio" name="q2" value="" class="quiz-answer" />
-            <label>Master interpersonal skills</label>
-        </li>
-    </ul>
-</div>
-<div class="quiz-step step3">
-     <h2 class="question-title">What is the key to being a successful marketer?</h2>
+#if (!$Frage.getSiblings().isEmpty())
+	#foreach ($cur_Frage in $Frage.getSiblings())
+	<div class="quiz-step">
+	    $cur_Frage.getData()
+	</div>
+	#end
+#end
 
-    <ul class="no-bullet answers">
-        <li>
-            <input type="radio" name="q3" value="" class="quiz-answer" />
-            <label>Knowledge of data and statistics</label>
-        </li>
-        <li>
-            <input type="radio" name="q3" value="" class="quiz-answer" />
-            <label>Logical thinking and problem solving</label>
-        </li>
-        <li>
-            <input type="radio" name="q3" value="" class="quiz-answer" />
-            <label>People person &ndash; interaction</label>
-        </li>
-        <li>
-            <input type="radio" name="q3" value="" class="quiz-answer" />
-            <label>Advising, Analying, Evaluating</label>
-        </li>
-    </ul>
-</div>
 <div id="results" class="quiz-step">
-
+$RueckmeldungGenerell.getData()
+#if (!$RueckmeldungFuerPunkte.getSiblings().isEmpty())
+	#foreach ($cur_RueckmeldungFuerPunkte in $RueckmeldungFuerPunkte.getSiblings())
+	    #set ($points = 'points' + $cur_RueckmeldungFuerPunkte.Mindestpunkte)
+	    <div class="result $points">
+	        $cur_RueckmeldungFuerPunkte.getData()
+	    </div>
+    #end
+#end
 </div>
-
 
 <script src="$jQueryInclude"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -117,7 +75,6 @@ ${d}(document).ready(function(){
         
         totalScore += parseInt(${d}this.attr('value'));
         alert(totalScore);
-        
         
         if (${d}step.children('.active').length > 0) {
             var wasActive = ${d}step.children('.active');

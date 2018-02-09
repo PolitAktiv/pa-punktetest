@@ -29,15 +29,6 @@ ul.no-bullet {
 .quiz-step.current {
     display: block;
 }
-.result {
-	display: block;
-}
-.result.current {
-	display: block;
-}
-.highlight {
-    color: red;
-}
 </style>
 
 <div class="quiz-step current">
@@ -53,7 +44,7 @@ ul.no-bullet {
 	#end
 #end
 
-<div id="resultz">
+<div id="results" class="quiz-step results">
 $RueckmeldungGenerell.getData()
 #if (!$RueckmeldungFuerPunkte.getSiblings().isEmpty())
 	#foreach ($cur_RueckmeldungFuerPunkte in $RueckmeldungFuerPunkte.getSiblings())
@@ -63,8 +54,6 @@ $RueckmeldungGenerell.getData()
 	    </div>
     #end
 #end
-</div>
-<div id="results" class="quiz-step">
 </div>
 
 <script src="$jQueryInclude"></script>
@@ -83,25 +72,15 @@ ${d}(document).ready(function(){
         
         ${d}('div[id^="points"]').each(function() {
             var pointsForResponse = parseInt(${d}(this).attr('id').replace('points',''));
-            //alert(pointsForResponse);
             
             if (totalScore >= pointsForResponse) {
-                //alert('erreicht');
                 ${d}('div[id^="points"]').each(function() {
-                    //alert('hidden ' + ${d}(this).attr('id'));
                     ${d}(this).hide();
-                    //if (${d}this.hasClass('highlight')) {
-                    //    ${d}this.removeClass('highlight');
-                    //}
                 });
-                //${d}this.addClass('highlight');
                 
                 ${d}(this).show();
             }
         });
-        //${d}('#results').find('.result').each(function() {
-           // ${d}(this).toggleClass('current', totalScore >= parseInt(${d}(this).getClas))
-        //});
         
         if (${d}step.children('.active').length > 0) {
             var wasActive = ${d}step.children('.active');
@@ -122,29 +101,24 @@ function updateStep(${d}currentStep) {
 }
 
 function sortResults() {
-    // get array of elements
-var myArray = ${d}("${h}resultz");
-var count = 0;
+var ${d}resdiv = ${d}('div.results');
+var ${d}res = ${d}resdiv.children('div');
 
-// sort based on timestamp attribute
-myArray.sort(function (a, b) {
-    
-    // convert to integers from strings
-    a = parseInt(${d}(a).attr("points"), 10);
-    b = parseInt(${d}(b).attr("points"), 10);
-    count += 2;
-    // compare
-    if(a > b) {
-        return 1;
-    } else if(a < b) {
-        return -1;
-    } else {
-        return 0;
-    }
+${d}res.sort(function(a,b){
+	var an = a.getAttribute('points');
+	var bn = b.getAttribute('points');
+
+	if(an > bn) {
+		return 1;
+	}
+	if(an < bn) {
+		return -1;
+	}
+	return 0;
 });
 
-// put sorted results back on page
-$("${h}results").append(myArray);
+${d}res.detach().appendTo(${d}resdiv);
 }
+
 });
 </script>

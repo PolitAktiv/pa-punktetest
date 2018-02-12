@@ -3,37 +3,17 @@
 #set ($h = '#')
 
 <style>
-.question-title {
-    font-size: 1.125rem;
-    color: #fff;
-    background: #ff0000;
-    text-align: center;
-    padding: 4px 50px;
-    margin: 10px 0;
-}
-ul.no-bullet {
-    list-style: none;
-}
-.no-bullet.answers {
-    width: 250px;
-    margin: 0 auto;
-}
-@media only screen and (min-width: 768px) {
-    .question-title {
-        margin-top: 97px;
-    }
-}
 .quiz-step {
     display: none;
 }
 .quiz-step.current {
-    display: block;
+    display: none;
 }
 </style>
 
-<div class="quiz-step current">
+<div class="quiz-step current" style="display:block;">
     $Erklaerung.getData()
-    <button class="quiz-answer" value="0">Quiz starten</button>
+    <button class="btn quiz-answer points-0">Quiz starten</button>
 </div>
 
 #if (!$Frage.getSiblings().isEmpty())
@@ -68,7 +48,36 @@ ${d}(document).ready(function(){
     ${d}step.find('.quiz-answer').click(function () {
         var ${d}this = ${d}(this);
         
-        totalScore += parseInt(${d}this.attr('value'));
+        var pointsForAnswer = ${d}(this).attr('class').match(/points[\w-]*\b/).toString();
+        totalScore += parseInt(pointsForAnswer.replace('points-',''));
+        
+        ${d}('div[id^="points"]').each(function() {
+            var pointsForResponse = parseInt(${d}(this).attr('id').replace('points',''));
+            
+            if (totalScore >= pointsForResponse) {
+                ${d}('div[id^="points"]').each(function() {
+                    ${d}(this).hide();
+                });
+                
+                ${d}(this).show();
+            }
+        });
+        
+        if (${d}step.children('.active').length > 0) {
+            var wasActive = ${d}step.children('.active');
+            ${d}step.children('.active').removeClass('active');
+            ${d}this.addClass('active');
+        } else {
+            ${d}this.addClass('active');
+            updateStep(${d}step);
+        }
+    });
+    
+    ${d}step.find('.quiz-answer-input').click(function () {
+        var ${d}this = ${d}(this);
+        
+        var pointsForAnswer = ${d}(this).attr('class').match(/points[\w-]*\b/).toString();
+        totalScore += parseInt(pointsForAnswer.replace('points-',''));
         
         ${d}('div[id^="points"]').each(function() {
             var pointsForResponse = parseInt(${d}(this).attr('id').replace('points',''));
@@ -96,7 +105,9 @@ ${d}(document).ready(function(){
 function updateStep(${d}currentStep) {
     if (${d}currentStep.hasClass('current')) {
         ${d}currentStep.removeClass('current');
+        ${d}currentStep.fadeOut('3000');
         ${d}currentStep.next('.quiz-step').addClass('current');
+        ${d}currentStep.next('.quiz-step').delay('1000').fadeIn('3000');
     }
 }
 

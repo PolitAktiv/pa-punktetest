@@ -1,8 +1,21 @@
+## This is the PunkteTest template
+## Version 1.0 Release
+
+## A PunkteTest is used like a highly configurable peronality quiz
+## giving the user individual feedback based on the achieved points
+
+## Uses the corresponding Structure, JavaScript and jQuery
+
 #set ($jQueryInclude = "/documents/10165/498023/jquery-latest.js/0d396618-0050-489c-8f96-100163768806")
 #set ($d = '$')
-#set ($h = '#')
 
 <style>
+.quiz-answer {
+    cursor: pointer;
+}
+.quiz-answer-input {
+    cursor: pointer;
+}
 .quiz-step {
     display: none;
 }
@@ -13,9 +26,9 @@
 
 <div class="quiz-step current" style="display:block;">
     $Erklaerung.getData()
-    <button class="btn quiz-answer points-0">Quiz starten</button>
 </div>
 
+## Get over all the questions and put them in a quiz-step div which each represent one page
 #if (!$Frage.getSiblings().isEmpty())
 	#foreach ($cur_Frage in $Frage.getSiblings())
 	<div class="quiz-step">
@@ -24,6 +37,7 @@
 	#end
 #end
 
+## The results are the last page of the quiz-steps and have their minimum points needed attached to them
 <div id="results" class="quiz-step results">
 $RueckmeldungGenerell.getData()
 #if (!$RueckmeldungFuerPunkte.getSiblings().isEmpty())
@@ -40,29 +54,42 @@ $RueckmeldungGenerell.getData()
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
 ${d}(document).ready(function(){
+    //Initialize the starting score and sort the results based on the points needed
     var totalScore = 0;
     sortResults();
 
+    //Each "page" of the quiz is a quiz-step
     ${d}('.quiz-step').each(function() {
     var ${d}step = ${d}(this);
+    
+    //Objects with the class quiz-answer should be clickable so we can switch to the next page
     ${d}step.find('.quiz-answer').click(function () {
         var ${d}this = ${d}(this);
         
+        //Every quiz-answer object also has a class like points-x where x is a number
+        //which is used to set the number of points for this answer
         var pointsForAnswer = ${d}(this).attr('class').match(/points[\w-]*\b/).toString();
         totalScore += parseInt(pointsForAnswer.replace('points-',''));
         
+        //After we updated our total score, now it's time to go through the responses
+        //based on their minimum points needed to achieve them
+        //The sorting in the beginning makes us go from low to high
         ${d}('div[id^="points"]').each(function() {
             var pointsForResponse = parseInt(${d}(this).attr('id').replace('points',''));
             
+            //If we reached enough points for this response we make all invisible
+            //This is needed so we don't have multiple answers shown
             if (totalScore >= pointsForResponse) {
                 ${d}('div[id^="points"]').each(function() {
                     ${d}(this).hide();
                 });
                 
+                //Now show the current valid result which is the highest possible
                 ${d}(this).show();
             }
         });
         
+        //Prepare to go to the next page
         if (${d}step.children('.active').length > 0) {
             var wasActive = ${d}step.children('.active');
             ${d}step.children('.active').removeClass('active');
@@ -73,11 +100,20 @@ ${d}(document).ready(function(){
         }
     });
     
+    //Sometimes we don't want to just have a quiz-answer to click on
+    //but a input field for the user to put in a number
+    //Works like the other click function above except this time we get our value
+    //from the input fields and can add additional multipliers for them
+    //Because of this, there doesn't need to be a points-x class on quiz-answer-input
     ${d}step.find('.quiz-answer-input').click(function () {
         var ${d}this = ${d}(this);
-        
-        var pointsForAnswer = ${d}(this).attr('class').match(/points[\w-]*\b/).toString();
-        totalScore += parseInt(pointsForAnswer.replace('points-',''));
+        var ${d}parentContainer = ${d}this.parent();
+        ${d}parentContainer.children('.inputDiv').each(function(){
+            var input = parseInt(${d}(this).children('.inputField').val());
+            var ${d}multiplierItem = ${d}(this).find('.multiplierItem').first();
+            var pointsForAnswer = parseInt(${d}multiplierItem.attr('class').match(/points[\w-]*\b/).toString().replace('points-',''));
+            totalScore += input * pointsForAnswer;
+        });
         
         ${d}('div[id^="points"]').each(function() {
             var pointsForResponse = parseInt(${d}(this).attr('id').replace('points',''));
@@ -91,6 +127,7 @@ ${d}(document).ready(function(){
             }
         });
         
+        //Prepare to go to the next page
         if (${d}step.children('.active').length > 0) {
             var wasActive = ${d}step.children('.active');
             ${d}step.children('.active').removeClass('active');
@@ -102,6 +139,7 @@ ${d}(document).ready(function(){
     });
 });
 
+//Go to the next page and use a fading animation
 function updateStep(${d}currentStep) {
     if (${d}currentStep.hasClass('current')) {
         ${d}currentStep.removeClass('current');
@@ -111,6 +149,7 @@ function updateStep(${d}currentStep) {
     }
 }
 
+//Sort the result pages from lowest to highest minimum points needed
 function sortResults() {
 var ${d}resdiv = ${d}('div.results');
 var ${d}res = ${d}resdiv.children('div');

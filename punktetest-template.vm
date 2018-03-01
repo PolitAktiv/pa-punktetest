@@ -13,6 +13,9 @@
 .quiz-answer {
     cursor: pointer;
 }
+.quiz-answer:hover {
+  opacity: 0.5;
+}
 .quiz-answer-input {
     cursor: pointer;
 }
@@ -21,6 +24,9 @@
 }
 .quiz-step.current {
     display: none;
+}
+.hover { 
+    border: 1px solid #000; 
 }
 </style>
 
@@ -53,7 +59,7 @@ $RueckmeldungGenerell.getData()
 <script src="$jQueryInclude"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
-${d}(document).ready(function(){
+${d}(document).ready(function() {
     //Initialize the starting score and sort the results based on the points needed
     var totalScore = 0;
     sortResults();
@@ -107,9 +113,9 @@ ${d}(document).ready(function(){
     //Because of this, there doesn't need to be a points-x class on quiz-answer-input
     ${d}step.find('.quiz-answer-input').click(function () {
         var ${d}this = ${d}(this);
-        var ${d}parentContainer = ${d}this.parent();
-        ${d}parentContainer.children('.inputDiv').each(function(){
-            var input = parseInt(${d}(this).children('.inputField').val());
+        var ${d}parentContainer = ${d}this.parent().parent().parent();
+        ${d}parentContainer.find('.inputDiv').each(function(){
+            var input = parseInt(${d}(this).find('.inputField').val());
             var ${d}multiplierItem = ${d}(this).find('.multiplierItem').first();
             var pointsForAnswer = parseInt(${d}multiplierItem.attr('class').match(/points[\w-]*\b/).toString().replace('points-',''));
             totalScore += input * pointsForAnswer;
@@ -155,8 +161,8 @@ var ${d}resdiv = ${d}('div.results');
 var ${d}res = ${d}resdiv.children('div');
 
 ${d}res.sort(function(a,b){
-	var an = a.getAttribute('points');
-	var bn = b.getAttribute('points');
+	var an = parseInt(a.getAttribute('points'));
+	var bn = parseInt(b.getAttribute('points'));
 
 	if(an > bn) {
 		return 1;
